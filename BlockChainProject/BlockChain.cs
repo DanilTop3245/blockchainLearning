@@ -73,7 +73,8 @@ public class BlockChain
             {
                 return false;
             }
-            if (currentBlock.Hash.Substring(0, Difficulty) != MiningService.Target[..Difficulty])
+            var target = new string(MiningService.Target, Difficulty);
+            if (!currentBlock.Hash.StartsWith(target, StringComparison.Ordinal))
             {
                 return false;
             }

@@ -38,7 +38,8 @@ using System.Threading.Tasks;
 //     Console.WriteLine("Blockchain is not valid.");
 // }
 
-var blockChainService = new BlockChain(4);
+const int difficulty = 4;
+var blockChainService = new BlockChain(difficulty);
 var displayService = new DisplayService();
 var stopwatch = new System.Diagnostics.Stopwatch();
 var hashingService = new HashingService();
@@ -66,7 +67,7 @@ var block2 = new Block
 // Обычный майнинг
 stopwatch.Restart();
 
-miningService.MineBlock(block1, 4);
+miningService.MineBlock(block1, difficulty);
 
 stopwatch.Stop();
 Console.WriteLine($"Обычный майнинг: {stopwatch.ElapsedMilliseconds} мс");
@@ -74,7 +75,7 @@ Console.WriteLine($"Обычный майнинг: {stopwatch.ElapsedMillisecond
 // Асинхронный майнинг
 stopwatch.Restart();
 
-await miningService.MineBlockAsync(block2, 4);
+await miningService.MineBlockAsync(block2, difficulty);
 
 stopwatch.Stop();
 Console.WriteLine($"Многопоточный майнинг: {stopwatch.ElapsedMilliseconds} мс");

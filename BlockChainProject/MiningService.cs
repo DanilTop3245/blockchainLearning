@@ -2,7 +2,7 @@ namespace BlockChainITStep;
 
 public class MiningService
 {
-    public const string Target = "dani";
+    public const char Target = '0';
 
     private readonly HashingService _hashingService;
 
@@ -13,13 +13,13 @@ public class MiningService
 
     public void MineBlock(Block block, int difficulty)
     {
-        var target = Target;
-        if (difficulty != target.Length)
+        if (difficulty <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(difficulty), target.Length,
-                "Difficulty must match the target length.");
+            throw new ArgumentOutOfRangeException(nameof(difficulty),
+                "Difficulty must be greater than zero.");
         }
 
+        var target = new string(Target, difficulty);
         var nonce = 0;
         while (true)
         {
@@ -38,13 +38,13 @@ public class MiningService
 
      public async Task MineBlockAsync(Block block, int difficulty)
     {
-        var target = Target;
-        if (difficulty != target.Length)
+        if (difficulty <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(difficulty), target.Length,
-                "Difficulty must match the target length.");
+            throw new ArgumentOutOfRangeException(nameof(difficulty),
+                "Difficulty must be greater than zero.");
         }
 
+        var target = new string(Target, difficulty);
         using var cancellation = new CancellationTokenSource();
         var workerCount = Environment.ProcessorCount;
         var tasks = new Task[workerCount];
