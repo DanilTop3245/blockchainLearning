@@ -35,7 +35,7 @@ public class BlockChain
         Chain.Add(genesisBlock);
     }
 
-    public void AddBlock(string data) {
+    public async Task AddBlock(string data) {
         var lastBlock = Chain[Chain.Count - 1];
         var newBlock = new Block
         {
@@ -43,10 +43,10 @@ public class BlockChain
             Data = data,
             PrevHash = lastBlock.Hash,
             TimeStamp = DateTime.Now,
-            Author = "Dani" // Устанавливаем автора блока
+            Author = "Danil" // Устанавливаем автора блока
         };
         
-        _miningService.MineBlock(newBlock, Difficulty);
+        await _miningService.MineBlockAsync(newBlock, Difficulty);
         Chain.Add(newBlock);
     }
 

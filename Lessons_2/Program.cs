@@ -1,5 +1,5 @@
 ﻿using BlockChainITStep;
-
+using System.Threading.Tasks;
 
 // var blockChainService = new BlockChain();
 // var displayService = new DisplayService();
@@ -40,19 +40,47 @@
 
 var blockChainService = new BlockChain(4);
 var displayService = new DisplayService();
+var stopwatch = new System.Diagnostics.Stopwatch();
+var hashingService = new HashingService();
+var miningService = new MiningService(hashingService);
 
-blockChainService.AddBlock("Register user: Alice");
-
-if (blockChainService.IsChainValid())
+var block1 = new Block
 {
-    Console.WriteLine("The blockchain is valid.");
-}
-else
-{
-    Console.WriteLine("The blockchain is not valid.");
-}
+    Index = 1,
+    Data = "Test",
+    PrevHash = "0",
+    TimeStamp = DateTime.Now,
+    Author = "Danil"
+};
 
-displayService.DisplayChain(blockChainService);
-Console.WriteLine(new string('-', 30));
-// blockChainService.SearchBlockByIndex(2);
-// blockChainService.SearchEventByText("PS5");
+var block2 = new Block
+{
+    Index = block1.Index,
+    Data = block1.Data,
+    PrevHash = block1.PrevHash,
+    TimeStamp = block1.TimeStamp,
+    Author = block1.Author
+};
+
+// Сравнение производительности майнинга
+// Обычный майнинг
+stopwatch.Restart();
+
+miningService.MineBlock(block1, 4);
+
+stopwatch.Stop();
+Console.WriteLine($"Обычный майнинг: {stopwatch.ElapsedMilliseconds} мс");
+
+// Асинхронный майнинг
+stopwatch.Restart();
+
+await miningService.MineBlockAsync(block2, 4);
+
+stopwatch.Stop();
+Console.WriteLine($"Многопоточный майнинг: {stopwatch.ElapsedMilliseconds} мс");
+
+// displayService.DisplayChain(blockChainService);
+// Console.WriteLine(new string('-', 30));
+
+
+
