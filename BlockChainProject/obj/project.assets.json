@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\BlockChainITStep\\blockchainLearning\\Lessons_4\\BlockChainProject.csproj",
+      "projectUniqueName": "D:\\BlockChainITStep\\blockchainLearning\\BlockChainProject\\BlockChainProject.csproj",
       "projectName": "BlockChainProject",
-      "projectPath": "d:\\BlockChainITStep\\blockchainLearning\\Lessons_4\\BlockChainProject.csproj",
+      "projectPath": "D:\\BlockChainITStep\\blockchainLearning\\BlockChainProject\\BlockChainProject.csproj",
       "packagesPath": "C:\\Users\\Danil\\.nuget\\packages\\",
-      "outputPath": "d:\\BlockChainITStep\\blockchainLearning\\Lessons_4\\obj\\",
+      "outputPath": "D:\\BlockChainITStep\\blockchainLearning\\BlockChainProject\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Danil\\AppData\\Roaming\\NuGet\\NuGet.Config"
