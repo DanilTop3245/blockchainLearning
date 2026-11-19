@@ -1,6 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
-
 namespace BlockChainITStep;
 
 public class Block
@@ -11,8 +8,11 @@ public class Block
     // Хеш текущего блока
     public string Hash { get; set; } = string.Empty;
 
-    // Данные блока
     public string Data { get; set; } = string.Empty;
+
+    // Данные блока
+    // список транзакций, которые будут храниться в блоке
+    public List<Transaction> Transactions { get; set; } = new();
 
     // Хеш предыдущего блока
     public string PrevHash { get; set; } = string.Empty;
@@ -22,6 +22,12 @@ public class Block
     public string Author { get; set; } = string.Empty;
 
     // Число, используемое для доказательства работы (Proof of Work)
-    public int Nonce { get; set; } 
+    public long Nonce { get; set; } 
+
+    public decimal MiningDuration { get; set; } 
+    // Время, затраченное на майнинг блока в миллисекундах
+    public int DifficultyAtMining { get; set; } 
+    // Сложность майнинга на момент создания блока
+    public long Attempts { get; set; } // Количество попыток майнинга блока
 
 }

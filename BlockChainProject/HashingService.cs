@@ -7,8 +7,12 @@ public class HashingService
 {
     public string ComputeBlockHash(Block block)
     {
+        var stringTransactionsRaw = string.Concat(block.Transactions.Select(t => t.ToRawString()));
         // Формируем хеш данных блока для хеширования
-        var blockData = $"{block.Index}{block.PrevHash}{block.TimeStamp}{block.Data}{block.Author}{block.Nonce}";
+        var blockData =
+            $"{block.Index}{block.PrevHash}{block.TimeStamp}" +
+            $"{stringTransactionsRaw}{block.Data}{block.Author}" +
+            $"{block.Nonce}{block.DifficultyAtMining}";
         return ComputeHash(blockData);
     }
 
@@ -19,7 +23,7 @@ public class HashingService
         {
             var bytes = Encoding.UTF8.GetBytes(data);
             var hashBytes = sha256.ComputeHash(bytes);
-            return Convert.ToBase64String(hashBytes);
+            return Convert.ToHexString(hashBytes);
         }
     }
 }
