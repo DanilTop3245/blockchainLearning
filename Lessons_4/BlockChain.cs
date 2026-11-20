@@ -142,6 +142,126 @@ public class BlockChain
         return IsValid();
     }
 
+    public void AuditBlockchain()
+    {
+        var errors = new List<string>();
+        var transactionIds = new Dictionary<string, int>();
+        var userOperations = new Dictionary<string, int>();
+        var totalTransactions = 0;
+        decimal totalAmount = 0;
+
+        for (var i = 0; i < Chain.Count; i++)
+        {
+            var currentBlock = Chain[i];
+            var expectedHash = _hashingService.ComputeBlockHash(currentBlock);
+
+            if (currentBlock.Hash != expectedHash)
+            {
+                errors.Add(
+                    $"Block {currentBlock.Index}: Hash mismatch.");
+            }
+
+            if (i == 0)
+            {
+                if (currentBlock.PrevHash != "0")
+                {
+                    errors.Add(
+                        $"Block {currentBlock.Index}: PreviousHash must be 0.");
+                }
+            }
+            else
+            {
+                var previousBlock = Chain[i - 1];
+                if (currentBlock.PrevHash != previousBlock.Hash)
+                {
+                    errors.Add(
+                        $"Block {currentBlock.Index}: PreviousHash mismatch.");
+                }
+            }
+
+            foreach (var transaction in currentBlock.Transactions)
+            {
+                totalTransactions++;
+                totalAmount += transaction.Amount;
+
+                var validationResult =
+                    _transactionService.ValidateTransaction(transaction);
+                if (!validationResult.IsValid)
+                {
+                    errors.Add(
+                        $"Block {currentBlock.Index}, Transaction " +
+                        $"{transaction.Id}: {validationResult.ErrorMessage}");
+                }
+
+                if (transactionIds.TryGetValue(transaction.Id,
+                    out var previousBlockIndex) &&
+                    previousBlockIndex != currentBlock.Index)
+                {
+                    errors.Add(
+                        $"Block {currentBlock.Index}, Transaction " +
+                        $"{transaction.Id}: duplicate Transaction Id. " +
+                        $"It was already found in block {previousBlockIndex}.");
+                }
+                else
+                {
+                    transactionIds[transaction.Id] = currentBlock.Index;
+                }
+
+                AddUserOperation(userOperations, transaction.From);
+                AddUserOperation(userOperations, transaction.To);
+            }
+        }
+
+        var mostActiveUser = userOperations.Count == 0
+            ? "No users"
+            : userOperations
+                .OrderByDescending(item => item.Value)
+                .First()
+                .Key;
+        var mostActiveUserOperations = userOperations.Count == 0
+            ? 0
+            : userOperations[mostActiveUser];
+
+        Console.WriteLine();
+        Console.WriteLine("Blockchain Audit Report:");
+        Console.WriteLine($"Blocks: {Chain.Count}");
+        Console.WriteLine($"Transactions: {totalTransactions}");
+        Console.WriteLine($"Total transfer amount: {totalAmount}");
+        Console.WriteLine(
+            $"User with most operations: {mostActiveUser} " +
+            $"({mostActiveUserOperations})");
+
+        if (errors.Count == 0)
+        {
+            Console.WriteLine("Blockchain result: VALID");
+        }
+        else
+        {
+            Console.WriteLine("Blockchain result: INVALID");
+            Console.WriteLine("Problems found:");
+            foreach (var error in errors)
+            {
+                Console.WriteLine($"- {error}");
+            }
+        }
+
+        Console.WriteLine(new string('-', 30));
+    }
+
+    private void AddUserOperation(
+        Dictionary<string, int> userOperations,
+        string user)
+    {
+        if (userOperations.ContainsKey(user))
+        {
+            userOperations[user]++;
+        }
+        else
+        {
+            userOperations[user] = 1;
+        }
+    }
+
     public void SearchBlockByIndex(int Index)
     {
         var block = Chain.Find(b => b.Index == Index);

@@ -105,6 +105,7 @@ while (true)
     Console.WriteLine("13. Search Block by Index");
     Console.WriteLine("14. Search Events by Text");
     Console.WriteLine("15. Change Second Block Data");
+    Console.WriteLine("16. Run Blockchain Audit Demo");
 
     var option = Console.ReadLine();
     switch (option)
@@ -236,6 +237,20 @@ while (true)
             {
                 Console.WriteLine("Create event blocks first.");
             }
+            break;
+        case "16":
+            await blockChainService.CreateDemoChainAsync();
+            Console.WriteLine("Demo transaction chain created.");
+            blockChainService.AuditBlockchain();
+
+            if (blockChainService.Chain[1].Transactions.Count > 0)
+            {
+                blockChainService.Chain[1].Transactions[0].Amount += 100;
+                Console.WriteLine(
+                    "Transaction amount in block 1 was changed.");
+            }
+
+            blockChainService.AuditBlockchain();
             break;
         default:
             Console.WriteLine("Invalid option.");
